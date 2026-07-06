@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>언니 UNIT — Korean with Jin & Seul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14152B;
+    --ink-soft:#1F2140;
+    --cream:#FBF3E7;
+    --seal:#C6382E;
+    --gold:#D4AF6A;
+    --mint:#8FE3D1;
+    --jin: var(--seal);
+    --seul: #2E6B8F;
+    --line: rgba(251,243,231,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Noto Sans KR', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .eyebrow{
+    font-family:'Gaegu', cursive;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-size:0.85rem;
+    color:var(--gold);
+  }
+  h1,h2,h3{ font-family:'Noto Serif KR', serif; margin:0; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:5.5rem 6vw 4rem;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 12% 20%, rgba(198,56,46,0.25), transparent 40%),
+      radial-gradient(circle at 88% 15%, rgba(143,227,209,0.18), transparent 45%);
+    pointer-events:none;
+  }
+  .hero-inner{ position:relative; max-width:980px; }
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 5rem);
+    font-weight:900;
+    line-height:1.05;
+    margin:0.6rem 0 1rem;
+  }
+  .hero h1 .accent{ color:var(--seal); }
+  .hero p.lede{
+    max-width:560px;
+    font-size:1.05rem;
+    line-height:1.7;
+    color:rgba(251,243,231,0.8);
+  }
+  .hero-tags{ display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:1.8rem; }
+  .stamp-tag{
+    font-family:'Gaegu', cursive;
+    border:1.5px solid var(--gold);
+    color:var(--gold);
+    border-radius:999px;
+    padding:0.3rem 0.9rem;
+    font-size:0.95rem;
+    transform:rotate(-2deg);
+  }
+  .stamp-tag:nth-child(even){ transform:rotate(2deg); }
+  .cta-row{ margin-top:2.4rem; display:flex; gap:1rem; flex-wrap:wrap; }
+  .btn{
+    font-family:'Noto Sans KR', sans-serif;
+    font-weight:700;
+    border:none;
+    cursor:pointer;
+    padding:0.85rem 1.6rem;
+    border-radius:8px;
+    font-size:0.95rem;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn-primary{ background:var(--seal); color:var(--cream); box-shadow:0 6px 0 #7d251d; }
+  .btn-primary:hover{ box-shadow:0 8px 0 #7d251d; }
+  .btn-ghost{ background:transparent; color:var(--cream); border:1.5px solid var(--line); }
+
+  section{ padding:4.5rem 6vw; border-bottom:1px solid var(--line); }
+  .section-head{ max-width:640px; margin-bottom:2.6rem; }
+  .section-head h2{ font-size:clamp(1.8rem,3.4vw,2.6rem); font-weight:700; }
+  .section-head .eyebrow{ display:block; margin-bottom:0.5rem; }
+
+  /* ---------- TUTOR PHOTOCARDS ---------- */
+  .duo{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2.4rem;
+  }
+  @media (max-width:760px){ .duo{ grid-template-columns:1fr; } }
+
+  .card-scene{ perspective:1400px; }
+  .card{
+    position:relative;
+    width:100%;
+    aspect-ratio:3/4;
+    transform-style:preserve-3d;
+    transition:transform 0.7s cubic-bezier(.2,.9,.25,1);
+    cursor:pointer;
+  }
+  .card.flipped{ transform:rotateY(180deg); }
+  .card-face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    border-radius:18px;
+    padding:1.8rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+  }
+  .card-face.front{
+    background:linear-gradient(155deg, var(--face-a), var(--face-b));
+    box-shadow:0 20px 40px rgba(0,0,0,0.35);
+  }
+  .card-face.front::after{
+    content:"";
+    position:absolute; inset:0; border-radius:18px;
+    background:linear-gradient(120deg, rgba(255,255,255,0.25), transparent 30%, transparent 70%, rgba(255,255,255,0.15));
+    mix-blend-mode:overlay;
+    z-index:1;
+  }
+  .card-photo{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    border-radius:18px;
+    z-index:0;
+  }
+  .card-face.front::before{
+    content:"";
+    position:absolute; inset:0; border-radius:18px;
+    background:linear-gradient(180deg, rgba(20,21,43,0) 38%, rgba(20,21,43,0.82) 100%);
+    z-index:1;
+  }
+  .card-role, .card-face.front h3, .card-face.front .kr, .flip-hint{ position:relative; z-index:2; }
+  .card-role{ font-family:'Gaegu',cursive; font-size:1.05rem; color:rgba(20,21,43,0.75); }
+  .card-face.front h3{ font-size:2.2rem; color:var(--ink); }
+  .card-face.front .kr{ font-size:1rem; color:rgba(20,21,43,0.6); margin-top:0.2rem; }
+  .card-face.front.has-photo .card-role,
+  .card-face.front.has-photo h3,
+  .card-face.front.has-photo .kr{ color:var(--cream); }
+  .flip-hint{
+    position:absolute; top:1.2rem; right:1.2rem;
+    font-family:'Gaegu',cursive; font-size:0.85rem;
+    background:rgba(20,21,43,0.15); color:var(--ink);
+    padding:0.25rem 0.7rem; border-radius:999px;
+  }
+  .card-face.front.has-photo .flip-hint{ background:rgba(20,21,43,0.55); color:var(--cream); }
+  .card-face.back{
+    background:var(--ink-soft);
+    border:1.5px solid var(--gold);
+    transform:rotateY(180deg);
+    justify-content:flex-start;
+    gap:0.9rem;
+  }
+  .card-face.back .card-role{ color:var(--gold); }
+  .card-face.back h3{ color:var(--cream); font-size:1.6rem; }
+  .back-bio{ font-size:0.92rem; line-height:1.6; color:rgba(251,243,231,0.85); }
+  .hashwrap{ display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:auto; }
+  .hashwrap span{
+    font-family:'Gaegu',cursive;
+    font-size:0.9rem;
+    border:1px solid var(--mint);
+    color:var(--mint);
+    padding:0.2rem 0.7rem;
+    border-radius:999px;
+  }
+  .seal-mark{
+    position:absolute; bottom:1.4rem; right:1.4rem;
+    width:52px; height:52px; border-radius:50%;
+    border:2px solid var(--seal);
+    color:var(--seal);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Noto Serif KR', serif; font-weight:900; font-size:1.1rem;
+    transform:rotate(-8deg);
+    opacity:0.85;
+  }
+
+  /* ---------- TRACKLIST ---------- */
+  .tracklist{ display:flex; flex-direction:column; gap:0; max-width:820px; }
+  .track{
+    display:grid;
+    grid-template-columns:64px 1fr auto;
+    align-items:center;
+    gap:1.2rem;
+    padding:1.3rem 0;
+    border-top:1px solid var(--line);
+  }
+  .track:last-child{ border-bottom:1px solid var(--line); }
+  .track-num{
+    width:44px; height:44px; border-radius:50%;
+    border:1.5px solid var(--gold); color:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Noto Serif KR',serif; font-weight:700;
+  }
+  .track-title{ font-size:1.15rem; font-weight:700; }
+  .track-sub{ font-size:0.9rem; color:rgba(251,243,231,0.65); margin-top:0.25rem; }
+  .track-who{
+    font-family:'Gaegu',cursive;
+    font-size:0.9rem;
+    white-space:nowrap;
+    padding:0.3rem 0.8rem;
+    border-radius:999px;
+  }
+  .who-jin{ background:rgba(198,56,46,0.18); color:#ff9c92; }
+  .who-seul{ background:rgba(46,107,143,0.28); color:#8fd6ff; }
+  .who-both{ background:rgba(212,175,106,0.2); color:var(--gold); }
+
+  /* ---------- SCHEDULE ---------- */
+  .legend{ display:flex; gap:1.4rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; }
+  .dot{ width:12px; height:12px; border-radius:3px; }
+  .dot.jin{ background:var(--jin); }
+  .dot.seul{ background:var(--seul); }
+
+  .tz-toggle{
+    display:flex; align-items:center; gap:0.8rem;
+    margin-bottom:1.8rem; flex-wrap:wrap;
+  }
+  .tz-toggle .tz-label{ font-size:0.85rem; color:rgba(251,243,231,0.6); }
+  .tz-btns{ display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; }
+  .tz-btn{
+    background:transparent; border:none; color:rgba(251,243,231,0.7);
+    font-family:'Noto Sans KR',sans-serif; font-size:0.85rem;
+    padding:0.5rem 1rem; cursor:pointer;
+  }
+  .tz-btn.active{ background:var(--gold); color:var(--ink); font-weight:700; }
+  .tz-note{ font-size:0.78rem; color:rgba(251,243,231,0.45); max-width:420px; }
+
+  .cal-wrap{ overflow-x:auto; }
+  .cal{
+    display:grid;
+    grid-template-columns:70px repeat(7, minmax(84px,1fr));
+    gap:6px;
+    min-width:680px;
+  }
+  .cal .cell{ font-size:0.8rem; }
+  .cal .head{
+    font-family:'Gaegu',cursive; text-align:center;
+    padding:0.5rem 0; color:rgba(251,243,231,0.7);
+    border-bottom:1px solid var(--line);
+  }
+  .cal .time-label{
+    display:flex; align-items:center; justify-content:flex-end;
+    padding-right:0.5rem; color:rgba(251,243,231,0.45);
+    font-size:0.75rem;
+  }
+  .slot{
+    height:38px;
+    border-radius:6px;
+    background:rgba(251,243,231,0.04);
+    border:1px dashed rgba(251,243,231,0.1);
+  }
+  .slot.open{
+    cursor:pointer;
+    border:1px solid transparent;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Gaegu',cursive; font-size:0.78rem; color:var(--ink);
+    transition:transform 0.12s ease;
+  }
+  .slot.open:hover{ transform:scale(1.05); }
+  .slot.open.jin{ background:var(--jin); }
+  .slot.open.seul{ background:var(--seul); }
+  .slot.open.both{ background:linear-gradient(90deg, var(--jin) 50%, var(--seul) 50%); }
+  .slot.selected{ outline:3px solid var(--gold); }
+
+  .selection-bar{
+    margin-top:1.8rem;
+    padding:1rem 1.3rem;
+    border:1px solid var(--line);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+    font-size:0.95rem;
+  }
+  #selText{ color:rgba(251,243,231,0.8); }
+  #selText b{ color:var(--gold); }
+
+  footer{
+    padding:3.5rem 6vw 3rem;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;
+    color:rgba(251,243,231,0.55);
+    font-size:0.85rem;
+  }
+  footer .eyebrow{ margin-bottom:0.4rem; }
+
+  @media (max-width:600px){
+    .hero{ padding:4rem 5vw 3rem; }
+    section{ padding:3.2rem 5vw; }
+  }
+</style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">Seoul · Online Korean Tutoring Unit</span>
+      <h1>Not a hagwon.<br>Just two <span class="accent">unnies</span>,<br>talking real Korean.</h1>
+      <p class="lede">Jin and Seul are native Korean moms based in Seoul. Book a real conversation — how to text on KakaoTalk, how to write prettier Korean, how to sound like the drama you're binging. No textbook Korean here.</p>
+      <div class="hero-tags">
+        <span class="stamp-tag">#진짜언니</span>
+        <span class="stamp-tag">#TrueUnnie</span>
+        <span class="stamp-tag">#KakaoQueen</span>
+        <span class="stamp-tag">#드라마발음</span>
+      </div>
+      <div class="cta-row">
+        <button class="btn btn-primary" onclick="document.getElementById('schedule').scrollIntoView({behavior:'smooth'})">See open sessions</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('duo').scrollIntoView({behavior:'smooth'})">Meet the unnies</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="duo">
+    <div class="section-head">
+      <span class="eyebrow">The Unit</span>
+      <h2>Two unnies, two vibes</h2>
+    </div>
+    <div class="duo">
+
+      <div class="card-scene">
+        <div class="card" id="card-jin" onclick="this.classList.toggle('flipped')" style="--face-a:#F4DCC9; --face-b:#EBB8A7;">
+          <div class="card-face front" id="face-jin">
+            <img class="card-photo" src="images/jin.jpg" alt="Jin" onload="this.closest('.card-face').classList.add('has-photo')" onerror="this.remove()">
+            <span class="flip-hint">tap to flip ↺</span>
+            <div class="card-role">The True Unnie</div>
+            <h3>Jin</h3>
+            <div class="kr">진 언니</div>
+          </div>
+          <div class="card-face back">
+            <div class="card-role">진 언니 · Everyday Korean</div>
+            <h3>Jin</h3>
+            <p class="back-bio">Raising two kids in Seoul and texting all day on KakaoTalk — Jin teaches the Korean people actually use at home, at the market, and in the group chat. Warm, patient, zero judgment.</p>
+            <div class="hashwrap">
+              <span>#찐언니</span><span>#KakaoQueen</span><span>#MomLifeKorean</span><span>#PatientTeacher</span>
+            </div>
+            <div class="seal-mark">眞</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-scene">
+        <div class="card" id="card-seul" onclick="this.classList.toggle('flipped')" style="--face-a:#CFE7EA; --face-b:#9CC9D6;">
+          <div class="card-face front" id="face-seul">
+            <img class="card-photo" src="images/seul.jpg" alt="Seul" onload="this.closest('.card-face').classList.add('has-photo')" onerror="this.remove()">
+            <span class="flip-hint">tap to flip ↺</span>
+            <div class="card-role">The Drama Director</div>
+            <h3>Seul</h3>
+            <div class="kr">슬 언니</div>
+          </div>
+          <div class="card-face back">
+            <div class="card-role">슬 언니 · Sound & Script</div>
+            <h3>Seul</h3>
+            <p class="back-bio">Seul reads K-drama scripts out loud for fun — now she'll make you sound like the lead, not the subtitles. Sharp ear for pronunciation, obsessed with pretty handwriting too.</p>
+            <div class="hashwrap">
+              <span>#드라마언니</span><span>#PronunciationPro</span><span>#PrettyHandwriting</span><span>#DetailQueen</span>
+            </div>
+            <div class="seal-mark">瑟</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="classes">
+    <div class="section-head">
+      <span class="eyebrow">The Tracklist</span>
+      <h2>Sessions, not lectures</h2>
+    </div>
+    <div class="tracklist" id="tracklist"></div>
+  </section>
+
+  <section id="schedule">
+    <div class="section-head">
+      <span class="eyebrow">Open Sessions · All times KST</span>
+      <h2>Pick a spot on the schedule</h2>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="dot jin"></span> Jin — Tue/Wed/Thu, 11:00–14:00 KST</div>
+      <div class="legend-item"><span class="dot seul"></span> Seul — Tue/Wed/Thu/Fri, 10:00–16:00 KST</div>
+    </div>
+
+    <div class="tz-toggle">
+      <span class="tz-label">Show times in:</span>
+      <div class="tz-btns">
+        <button class="tz-btn active" id="tzBtnKST" onclick="setTimezoneMode('kst')">Seoul (KST)</button>
+        <button class="tz-btn" id="tzBtnLocal" onclick="setTimezoneMode('local')">My time zone</button>
+      </div>
+      <span class="tz-note" id="tzNote"></span>
+    </div>
+
+    <p style="font-size:0.85rem;color:rgba(251,243,231,0.55);margin:-0.6rem 0 1.2rem;">Tap as many open blocks as you like — you can request more than one time.</p>
+
+    <div class="cal-wrap">
+      <div class="cal" id="calGrid"></div>
+    </div>
+
+    <div class="selection-bar">
+      <div id="selText">No sessions selected yet — tap one or more open blocks above.</div>
+      <button class="btn btn-primary" onclick="confirmSelection()">Request these sessions</button>
+    </div>
+  </section>
+
+  <footer>
+    <div>
+      <span class="eyebrow">언니 Unit</span>
+    </div>
+    <div>
+      <span class="eyebrow">Contact</span>
+      tutornamoo@gmail.com · @tutornamoo
+    </div>
+  </footer>
+
+<script>
+  // ---------- Tracklist ----------
+  const tracks = [
+    {n:'01', title:'Kakao Talk Like a Local', sub:'Texting slang, abbreviations, emoji culture, reading between the lines.', who:'jin', label:'with Jin'},
+    {n:'02', title:'Pretty Handwriting Hour', sub:'Korean penmanship — stroke order and style, not just legibility.', who:'seul', label:'with Seul'},
+    {n:'03', title:'K-Drama Script Reading Lab', sub:'Read real drama scenes aloud; fix pronunciation and intonation.', who:'seul', label:'with Seul'},
+    {n:'04', title:'Real Mom-Life Korean', sub:'Parenting vocab, small talk at pickup, daily-life expressions.', who:'jin', label:'with Jin'},
+    {n:'05', title:'Free Talk with Unnie', sub:'Open conversation practice, either unnie, whatever\'s on your mind.', who:'both', label:'either unnie'},
+  ];
+  const tl = document.getElementById('tracklist');
+  tracks.forEach(t=>{
+    const row = document.createElement('div');
+    row.className='track';
+    row.innerHTML = `
+      <div class="track-num">${t.n}</div>
+      <div>
+        <div class="track-title">${t.title}</div>
+        <div class="track-sub">${t.sub}</div>
+      </div>
+      <div class="track-who who-${t.who}">${t.label}</div>
+    `;
+    tl.appendChild(row);
+  });
+
+  // ---------- Schedule ----------
+  // TUTOR CONTACT — replace with real addresses before going live
+  const TUTOR_EMAIL = {
+    jin:  'jin@unnieunit.example',
+    seul: 'seul@unnieunit.example'
+  };
+
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  // Source of truth: availability is always defined in KST.
+  const jinDays = [1,2,3];       // Tue Wed Thu
+  const seulDays = [1,2,3,4];    // Tue Wed Thu Fri
+  const jinHours = [11,12,13];   // 11-12,12-13,13-14
+  const seulHours = [10,11,12,13,14,15]; // 10-11 ... 15-16
+
+  // Build the flat list of open KST slots once.
+  const kstSlots = [];
+  for(let di=0; di<7; di++){
+    for(let h=9; h<=17; h++){
+      const jinOpen = jinDays.includes(di) && jinHours.includes(h);
+      const seulOpen = seulDays.includes(di) && seulHours.includes(h);
+      if(jinOpen || seulOpen){
+        kstSlots.push({ kstDay: di, kstHour: h, who: jinOpen && seulOpen ? 'both' : (jinOpen ? 'jin' : 'seul') });
+      }
+    }
+  }
+
+  let tzMode = 'kst';
+  let localOffsetHours = -(new Date().getTimezoneOffset())/60; // hours vs UTC
+  let localTzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const diffHours = localOffsetHours - 9; // KST is always UTC+9
+
+  const selectedKeys = new Set(); // keys like "1-11" (kstDay-kstHour), always stored in KST regardless of display mode
+
+  function fmtHour(h){
+    const hh = ((h % 24)+24)%24;
+    return hh === 0 ? '12:00 am' : hh < 12 ? hh+':00 am' : hh === 12 ? '12:00 pm' : (hh-12)+':00 pm';
+  }
+
+  function renderGrid(){
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+
+    // Compute each slot's displayed day/hour based on mode.
+    const display = kstSlots.map(s=>{
+      if(tzMode === 'kst') return {...s, dDay:s.kstDay, dHour:s.kstHour};
+      const raw = s.kstHour + diffHours;
+      const dHour = ((Math.floor(raw)%24)+24)%24;
+      const dayShift = Math.floor(raw/24);
+      const dDay = ((s.kstDay + dayShift)%7+7)%7;
+      return {...s, dDay, dHour};
+    });
+
+    const hourRange = tzMode === 'kst'
+      ? Array.from({length:9}, (_,i)=>9+i) // 9am - 5pm KST, fixed compact view
+      : (()=>{
+          const hrs = display.map(d=>d.dHour);
+          let min = Math.min(...hrs), max = Math.max(...hrs);
+          min = Math.max(0, min-1); max = Math.min(23, max+1);
+          return Array.from({length:max-min+1}, (_,i)=>min+i);
+        })();
+
+    grid.appendChild(Object.assign(document.createElement('div'), {className:'cell head', textContent: tzMode==='kst' ? 'KST' : 'Local'}));
+    days.forEach(d=> grid.appendChild(Object.assign(document.createElement('div'), {className:'cell head', textContent:d})));
+
+    hourRange.forEach(h=>{
+      const label = document.createElement('div');
+      label.className='cell time-label';
+      label.textContent = fmtHour(h);
+      grid.appendChild(label);
+
+      days.forEach((d, di)=>{
+        const match = display.find(s=> s.dDay===di && s.dHour===h);
+        const cell = document.createElement('div');
+        if(match){
+          cell.className = 'slot open ' + match.who;
+          cell.textContent = match.who==='both' ? 'Jin/Seul' : (match.who==='jin' ? 'Jin' : 'Seul');
+          cell.dataset.who = match.who;
+          cell.dataset.key = match.kstDay + '-' + match.kstHour;
+          cell.dataset.displayDay = d;
+          cell.dataset.displayHour = label.textContent;
+          if(selectedKeys.has(cell.dataset.key)) cell.classList.add('selected');
+          cell.onclick = ()=> toggleSlot(cell);
+        } else {
+          cell.className='slot';
+        }
+        grid.appendChild(cell);
+      });
+    });
+
+    updateSelectionText();
+  }
+
+  function toggleSlot(cell){
+    const key = cell.dataset.key;
+    if(selectedKeys.has(key)){
+      selectedKeys.delete(key);
+      cell.classList.remove('selected');
+    } else {
+      selectedKeys.add(key);
+      cell.classList.add('selected');
+    }
+    updateSelectionText();
+  }
+
+  function updateSelectionText(){
+    const el = document.getElementById('selText');
+    if(selectedKeys.size === 0){
+      el.innerHTML = 'No sessions selected yet — tap one or more open blocks above.';
+      return;
+    }
+    const items = [...document.querySelectorAll('.slot.selected')].map(c=>{
+      const who = c.dataset.who==='both' ? 'Jin or Seul' : (c.dataset.who[0].toUpperCase()+c.dataset.who.slice(1));
+      return `<b>${c.dataset.displayDay} ${c.dataset.displayHour}</b> (${who})`;
+    });
+    el.innerHTML = `Selected ${selectedKeys.size} session${selectedKeys.size>1?'s':''}: ` + items.join(', ');
+  }
+
+  function setTimezoneMode(mode){
+    tzMode = mode;
+    document.getElementById('tzBtnKST').classList.toggle('active', mode==='kst');
+    document.getElementById('tzBtnLocal').classList.toggle('active', mode==='local');
+    document.getElementById('tzNote').textContent = mode==='local'
+      ? `Detected as ${localTzName}. Original hours are always KST — this view just converts for you.`
+      : '';
+    renderGrid();
+  }
+
+  function confirmSelection(){
+    if(selectedKeys.size === 0){
+      alert('Tap at least one open block on the calendar first.');
+      return;
+    }
+    const chosen = kstSlots.filter(s=> selectedKeys.has(s.kstDay+'-'+s.kstHour));
+    const recipients = new Set();
+    chosen.forEach(s=>{
+      if(s.who==='jin' || s.who==='both') recipients.add(TUTOR_EMAIL.jin);
+      if(s.who==='seul' || s.who==='both') recipients.add(TUTOR_EMAIL.seul);
+    });
+    const lines = chosen.map(s=> `- ${days[s.kstDay]} ${fmtHour(s.kstHour)} KST (${s.who==='both'?'Jin or Seul':s.who[0].toUpperCase()+s.who.slice(1)})`);
+    const subject = 'Session request — 언니 Unit';
+    const body = `Hi!\n\nI'd like to request the following session${chosen.length>1?'s':''}:\n\n${lines.join('\n')}\n\n(All times listed in KST.)\n\nThanks!`;
+    const href = `mailto:${[...recipients].join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = href;
+  }
+
+  renderGrid();
+</script>
+</body>
+</html>
